@@ -12,6 +12,7 @@ const RegisterPage = () => {
         <form className="register-form">
           <input type="email" placeholder="Email" className="register-input" required />
           <input type="password" placeholder="Password" className="register-input" required />
+          <input type="password" placeholder="Confirm Password" className="register-input" required />
           <button type="submit" className="register-button">Register</button> 
         </form>
       </div>
