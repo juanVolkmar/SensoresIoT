@@ -3,7 +3,7 @@ import "./LandingPage.css";
 import upb from "./assets/logo_upb.png";
 import esc_upb from "./assets/esc_upb.png";
 import { HiArrowNarrowRight  } from "react-icons/hi";
-
+import { Link } from "react-router-dom";
 const LandingPage = () =>{
     return(
         <>
@@ -14,7 +14,8 @@ const LandingPage = () =>{
                         <a href="" className="h_l"> ABOUT UPB </a>
                         <a href="" className="h_l"> GITHUB </a>
                     </div>
-                    <a href="" className="h_l btn"> GET STARTED </a>
+                    <Link to="/login" className="h_l btn"> GET STARTED </Link>
+
                 </div>
 
                 <div className="t_lp">
