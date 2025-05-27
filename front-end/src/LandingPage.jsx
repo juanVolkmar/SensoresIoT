@@ -54,7 +54,7 @@ const LandingPage = () =>{
                                 <p className="sb_note"> Ingenieria en Sistemas e Informatica </p>
                             </div>
                             <div className="">
-                                <p className="sb_name"> Maria Paula Florez Vargas </p>
+                                <p className="sb_name"> Santiago Restrepo Chalarca </p>
                                 <p className="sb_note"> Ingenieria en Sistemas e Informatica </p>
                             </div>
                         </div>
