@@ -1,5 +1,5 @@
 import express from 'express';
-//Importar los routers y usarlos
+import userRouter from './routes/userRouter.js';
 
 const app = express()
 app.use(express.json())
@@ -10,6 +10,9 @@ app.get('/ping', (_req, res) =>{
     console.log('someone pinged here!!')
     res.send('pong')
 })
+
+//Uso de las rutas
+app.use('/api/users', userRouter)
 
 app.listen(port, () =>{
     console.log(`Sever running on port ${port}`)
