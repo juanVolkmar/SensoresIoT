@@ -25,7 +25,7 @@ const LandingPage = () =>{
                         <p className="tt_text"> CRAZY IOT </p>
                     </div>
                     <div className="t_bottom">
-                        <p className="h_l btn tt_space2"> Explore Demo </p>
+                        <Link to="/sensor" className="h_l btn tt_space2"> Explore the sensors </Link>
                         <p className="tt_text"> DEVICES ARE IN HERE </p>
                     </div>
                 </div>
