@@ -10,6 +10,7 @@ import {
   FaTrash,
   FaTimes
 } from "react-icons/fa";
+import NavBar from "../navBar/NavBar";
 
 const SensorsView = () => {
   const [sensors, setSensors] = useState([
@@ -88,71 +89,81 @@ const SensorsView = () => {
   };
 
   return (
-    <div className="sensor-view">
-      <h2 className="sv-title">Panel de Sensores</h2>
+    <div className="sensor">
 
-      <div className="sv-metrics">
-        <div className="sv-card"><FaChartBar /><p>{totalRecords}</p><span>Registros</span></div>
-        <div className="sv-card"><FaList /><p>{totalSensors}</p><span>Sensores</span></div>
-        <div className="sv-card"><FaUsers /><p>{totalUsers}</p><span>Usuarios</span></div>
-        <div className="sv-card"><FaThermometerHalf /><p>{avgTemp}°C</p><span>Temp. Prom.</span></div>
-        <div className="sv-card"><FaTint /><p>{avgHum}%</p><span>Hum. Prom.</span></div>
+      <div className="nav">
+        <NavBar active={"sensores"}/>
       </div>
 
-      <div className="sv-last">
-        <h3>Último Registro</h3>
-        <p><strong>ID:</strong> {lastRecord?.id}</p>
-        <p><strong>Tipo:</strong> {lastRecord?.type}</p>
-        <p>
-          <strong>Valor:</strong>{" "}
-          {lastRecord?.[lastRecord.type]?.value} {lastRecord?.[lastRecord.type]?.type}
-        </p>
-      </div>
+      <div className="sensor-view">
 
-      <div className="sv-actions">
-        <button className="btn-add" onClick={() => setShowModal(true)}>
-          <FaPlus /> Crear Sensor
-        </button>
-      </div>
+        <h2 className="sv-title">Panel de Sensores</h2>
 
-      <div className="sv-carousel">
-        <h3>Lista de Sensores</h3>
-        <div className="carousel-container">
-          {sensors.map((sensor, index) => (
-            <div className="carousel-item" key={index}>
-              <h4>{sensor.id}</h4>
-              <p><strong>Tipo:</strong> {sensor.type}</p>
-              <p><strong>Valor:</strong> {sensor[sensor.type].value} {sensor[sensor.type].type}</p>
-              <button className="btn-delete" onClick={() => handleDeleteSensor(sensor.id)}><FaTrash /></button>
-            </div>
-          ))}
+        <div className="sv-metrics">
+          <div className="sv-card"><FaChartBar /><p>{totalRecords}</p><span>Registros</span></div>
+          <div className="sv-card"><FaList /><p>{totalSensors}</p><span>Sensores</span></div>
+          <div className="sv-card"><FaUsers /><p>{totalUsers}</p><span>Usuarios</span></div>
+          <div className="sv-card"><FaThermometerHalf /><p>{avgTemp}°C</p><span>Temp. Prom.</span></div>
+          <div className="sv-card"><FaTint /><p>{avgHum}%</p><span>Hum. Prom.</span></div>
         </div>
-      </div>
 
-      {showModal && (
-        <div className="modal-overlay">
-          <div className="modal">
-            <button className="close-btn" onClick={() => setShowModal(false)}><FaTimes /></button>
-            <h3>Nuevo Sensor</h3>
-            <input type="text" name="id" placeholder="ID del sensor" value={newSensor.id} onChange={handleInputChange} />
-            <select name="type" value={newSensor.type} onChange={handleInputChange}>
-              <option value="">Selecciona tipo</option>
-              <option value="temperatura">Temperatura</option>
-              <option value="humedad">Humedad</option>
-              <option value="radiacion">Radiación</option>
-              <option value="presion">Presión</option>
-            </select>
-            <input type="number" name="value" placeholder="Valor" value={newSensor.value} onChange={handleInputChange} />
-            <select name="valueType" value={newSensor.valueType} onChange={handleInputChange}>
-              <option value="">Selecciona unidad</option>
-              {(typeOptions[newSensor.type] || []).map((unit, i) => (
-                <option key={i} value={unit}>{unit}</option>
-              ))}
-            </select>
-            <button className="save-btn" onClick={handleSaveSensor}>Guardar</button>
+        <div className="sv-last">
+          <h3>Último Registro</h3>
+          <p><strong>ID:</strong> {lastRecord?.id}</p>
+          <p><strong>Tipo:</strong> {lastRecord?.type}</p>
+          <p>
+            <strong>Valor:</strong>{" "}
+            {lastRecord?.[lastRecord.type]?.value} {lastRecord?.[lastRecord.type]?.type}
+          </p>
+        </div>
+
+        <div className="sv-actions">
+          <button className="btn-add" onClick={() => setShowModal(true)}>
+            <FaPlus /> Crear Sensor
+          </button>
+        </div>
+
+        <div className="sv-carousel">
+          <h3>Lista de Sensores</h3>
+          <div className="carousel-container">
+            {sensors.map((sensor, index) => (
+              <div className="carousel-item" key={index}>
+                <h4>{sensor.id}</h4>
+                <p><strong>Tipo:</strong> {sensor.type}</p>
+                <p><strong>Valor:</strong> {sensor[sensor.type].value} {sensor[sensor.type].type}</p>
+                <button className="btn-delete" onClick={() => handleDeleteSensor(sensor.id)}><FaTrash /></button>
+              </div>
+            ))}
           </div>
         </div>
-      )}
+
+        {showModal && (
+          <div className="modal-overlay">
+            <div className="modal">
+              <button className="close-btn" onClick={() => setShowModal(false)}><FaTimes /></button>
+              <h3>Nuevo Sensor</h3>
+              <input type="text" name="id" placeholder="ID del sensor" value={newSensor.id} onChange={handleInputChange} />
+              <select name="type" value={newSensor.type} onChange={handleInputChange}>
+                <option value="">Selecciona tipo</option>
+                <option value="temperatura">Temperatura</option>
+                <option value="humedad">Humedad</option>
+                <option value="radiacion">Radiación</option>
+                <option value="presion">Presión</option>
+              </select>
+              <input type="number" name="value" placeholder="Valor" value={newSensor.value} onChange={handleInputChange} />
+              <select name="valueType" value={newSensor.valueType} onChange={handleInputChange}>
+                <option value="">Selecciona unidad</option>
+                {(typeOptions[newSensor.type] || []).map((unit, i) => (
+                  <option key={i} value={unit}>{unit}</option>
+                ))}
+              </select>
+              <button className="save-btn" onClick={handleSaveSensor}>Guardar</button>
+            </div>
+          </div>
+        )}
+
+      </div>
+
     </div>
   );
 };

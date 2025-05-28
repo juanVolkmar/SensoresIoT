@@ -4,17 +4,18 @@
     font-family: "Roboto", sans-serif;
 
     -- colors --
-    gray: #D2D2D2
-    d_gray: #A2A2A2
-    yellow: #FEF201
+    gray: #E0E0E0
+    d_gray: #626468
+    gray over wihite: #F1F1F0
+    yellow: #FEF100
     black: #111111
 
 */
 
 .lp{
     height: 95.5vh;
-    padding: 2% 5% 0% 5%;
-    background-color: #FEF201;
+    padding: 1% 5% 1% 5%;
+    background-color: #FEF100;
 }
 
 .h_lp{
@@ -32,6 +33,9 @@
     font-weight: 500;
 }
 
+.h_nl{
+    display: flex;
+}
 
 .h_nl a{
     margin-right: 20px;   
@@ -114,15 +118,15 @@
 .b_box{
     background-color: #111111;
     width: 20%;
-    border-radius: 10px 10px 0 0;
+    border-radius: 10px;
     padding: 3.5% 1.5% 1.5% 1.5%;
 }
 
 .s_box{
-    background-color: #A2A2A2;
+    background: linear-gradient(135deg, #6a11cb, #2575fc);
     width: 56%;
     margin: 0% 2%;
-    border-radius: 10px 10px 0 0;
+    border-radius: 10px;
     padding: 2% 1.5% 1.5% 1.5%;
 }
 
@@ -171,7 +175,7 @@
 .b_box2{
     background-color: #111111;
     width: 20%;
-    border-radius: 10px 10px 0 0;
+    border-radius: 10px;
     padding: 2% 1.5% 1.5% 1.5%;
 }
 

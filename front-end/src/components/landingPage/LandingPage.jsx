@@ -11,8 +11,8 @@ const LandingPage = () =>{
                 <div className="h_lp">
                     <img src={upb} alt="upb_logo" className="h_logo" />
                     <div className="h_nl">
-                        <a href="https://www.upb.edu.co/es/fundacion-universitaria" className="h_l"> ABOUT UPB </a>
-                        <a href="https://github.com/juanVolkmar/SensoresIoT" className="h_l"> GITHUB </a>
+                        <a href="https://www.upb.edu.co/" type="_blank" className="h_l"> ABOUT UPB </a>
+                        <a href="https://github.com/juanVolkmar/SensoresIoT" type="_blank" className="h_l"> GITHUB </a>
                     </div>
                     <Link to="/login" className="h_l btn"> GET STARTED </Link>
 
