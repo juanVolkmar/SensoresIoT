@@ -1,6 +1,6 @@
 import React from "react";
 import "./LoginPage.css";
-import upb from "./assets/logo_upb.png";
+import upb from "../../assets/logo_upb.png";
 import { Link } from "react-router-dom";
 const LoginPage = () => {
   return (
