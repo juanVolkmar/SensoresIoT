@@ -1,16 +1,15 @@
 import express from 'express';
-import userRouter from './routes/userRouter.js';
+import cors from 'cors';
+import routes from './routes.js';
 
 const app = express()
 app.use(express.json())
 
 const port = 3000
+
 app.use(cors({
-    origin: 'http://localhost:5173',
-    methods: 'GET,HEAD,PUT,PATCH,POST,DELETE,OPTIONS',
-    credentials: true,
-    optionsSuccessStatus: 204,
-}));
+    origin: '*', 
+}))  
 
 app.get('/ping', (_req, res) =>{
     console.log('someone pinged here!!')
@@ -18,7 +17,7 @@ app.get('/ping', (_req, res) =>{
 })
 
 //Uso de las rutas
-app.use('/api/users', userRouter)
+app.use('/', routes)
 
 app.listen(port, () =>{
     console.log(`Sever running on port ${port}`)

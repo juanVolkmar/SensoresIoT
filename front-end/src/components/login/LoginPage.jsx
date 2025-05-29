@@ -25,9 +25,9 @@ const LoginPage = () => {
             icon: 'success',
             confirmButtonText: 'OK'
         })
-        .then(() => { //aqui comienza el horror del token
+        .then(() => { 
           localStorage.setItem('UserToken',  data.token);
-          window.location.href = `/overview/${data.token}`;
+          window.location.href = `/overview`;
         });
 
       }else{

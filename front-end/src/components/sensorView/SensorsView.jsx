@@ -1,5 +1,7 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import "./SensorsView.css";
+import Swal from "sweetalert2"; 
+import { getSensors, createSensor, deleteSensor } from "../../api/sensor/sensor";
 import {
   FaThermometerHalf,
   FaTint,
@@ -13,12 +15,9 @@ import {
 import NavBar from "../navBar/NavBar";
 
 const SensorsView = () => {
-  const [sensors, setSensors] = useState([
-    { id: "Sensor_01", type: "temperatura", temperatura: { value: 23.0, type: "°C" } },
-    { id: "Sensor_02", type: "humedad", humedad: { value: 68.9, type: "%" } },
-    { id: "Sensor_03", type: "temperatura", temperatura: { value: 24.1, type: "°C" } },
-  ]);
-
+  const [sensors, setSensors] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
   const [showModal, setShowModal] = useState(false);
   const [newSensor, setNewSensor] = useState({
     id: "",
@@ -28,11 +27,33 @@ const SensorsView = () => {
   });
 
   const typeOptions = {
-    temperatura: ["°C", "°F", "K"],
-    humedad: ["%", "g/m³"],
-    radiacion: ["W/m²"],
-    presion: ["hPa", "atm"]
+    temperatura: ["float", "int"],
+    humedad: ["float", "int"],
+    radiacion: ["float", "int"],
+    presion: ["float", "int"]
   };
+
+  useEffect(() => {
+    const fetchSensors = async () => {
+      try {
+        setLoading(true);
+        const response = await getSensors();
+        
+        if (response.data && response.data.success) {
+          setSensors(response.data.data || []);
+        } else {
+          setError('Failed to fetch sensors data');
+        }
+      } catch (error) {
+        console.error('Error fetching sensors:', error);
+        setError('An error occurred while fetching sensors');
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchSensors();
+  }, []);
 
   const totalRecords = 4521;
   const totalSensors = sensors.length;
@@ -61,7 +82,7 @@ const SensorsView = () => {
     }));
   };
 
-  const handleSaveSensor = () => {
+  const handleSaveSensor = async () => {
     const { id, type, value, valueType } = newSensor;
 
     if (!id || !type || isNaN(value) || !valueType) {
@@ -70,100 +91,165 @@ const SensorsView = () => {
     }
 
     const sensorObject = {
-      id,
-      type,
+      "id":id,
+      "type":type,
       [type]: {
-        value,
-        type: valueType
+        "value":value,
+        "type":valueType
       }
     };
 
-    setSensors([...sensors, sensorObject]);
-    setNewSensor({ id: "", type: "", value: "", valueType: "" });
-    setShowModal(false);
+    try {
+      const response = await createSensor(sensorObject);
+      
+      if (response.data && response.data.success) {
+
+        Swal.fire({
+          title: "¡Éxito!", 
+          text: "Sensor creado correctamente.",
+          icon: "success",
+          confirmButtonText: "OK"
+        })
+        .then(() => {
+          window.location.reload();
+        });
+
+        setSensors([...sensors, sensorObject]);
+        setNewSensor({ id: "", type: "", value: "", valueType: "" });
+        setShowModal(false);
+      } else {
+        Swal.fire({
+          title: "Error",
+          text: "No se pudo crear el sensor.",
+          icon: "error",
+          confirmButtonText: "OK"
+        });
+        console.error("Failed to create sensor:", response.data);
+      }
+    } catch (error) {
+      console.error("Error creating sensor:", error);
+      alert("Error al crear el sensor. Por favor intente nuevamente.");
+    }
   };
 
-  const handleDeleteSensor = (id) => {
-    const updated = sensors.filter(sensor => sensor.id !== id);
-    setSensors(updated);
+  const handleDeleteSensor = async (id) => {
+    try {
+      const response = await deleteSensor(id);
+      console.log(id);
+      
+      if (response.data && response.data.success) {
+        Swal.fire({
+          title: "¡Éxito!",
+          text: "Sensor eliminado correctamente.",
+          icon: "success",
+          confirmButtonText: "OK"
+        })
+        .then(() => {
+          window.location.reload();
+        });
+        // Remove the deleted sensor from state
+        const updated = sensors.filter(sensor => sensor.id !== id);
+        setSensors(updated);
+      } else {
+        Swal.fire({
+          title: "Error",
+          text: "No se pudo eliminar el sensor.",
+          icon: "error",
+          confirmButtonText: "OK"
+        });
+        console.error("Failed to delete sensor:", response.data);
+      }
+    } catch (error) {
+      console.error("Error deleting sensor:", error);
+      alert("Error al eliminar el sensor. Por favor intente nuevamente.");
+    }
   };
 
   return (
     <div className="sensor">
-
       <div className="nav">
         <NavBar active={"sensores"}/>
       </div>
 
       <div className="sensor-view">
-
         <h2 className="sv-title">Panel de Sensores</h2>
 
-        <div className="sv-metrics">
-          <div className="sv-card"><FaChartBar /><p>{totalRecords}</p><span>Registros</span></div>
-          <div className="sv-card"><FaList /><p>{totalSensors}</p><span>Sensores</span></div>
-          <div className="sv-card"><FaUsers /><p>{totalUsers}</p><span>Usuarios</span></div>
-          <div className="sv-card"><FaThermometerHalf /><p>{avgTemp}°C</p><span>Temp. Prom.</span></div>
-          <div className="sv-card"><FaTint /><p>{avgHum}%</p><span>Hum. Prom.</span></div>
-        </div>
-
-        <div className="sv-last">
-          <h3>Último Registro</h3>
-          <p><strong>ID:</strong> {lastRecord?.id}</p>
-          <p><strong>Tipo:</strong> {lastRecord?.type}</p>
-          <p>
-            <strong>Valor:</strong>{" "}
-            {lastRecord?.[lastRecord.type]?.value} {lastRecord?.[lastRecord.type]?.type}
-          </p>
-        </div>
-
-        <div className="sv-actions">
-          <button className="btn-add" onClick={() => setShowModal(true)}>
-            <FaPlus /> Crear Sensor
-          </button>
-        </div>
-
-        <div className="sv-carousel">
-          <h3>Lista de Sensores</h3>
-          <div className="carousel-container">
-            {sensors.map((sensor, index) => (
-              <div className="carousel-item" key={index}>
-                <h4>{sensor.id}</h4>
-                <p><strong>Tipo:</strong> {sensor.type}</p>
-                <p><strong>Valor:</strong> {sensor[sensor.type].value} {sensor[sensor.type].type}</p>
-                <button className="btn-delete" onClick={() => handleDeleteSensor(sensor.id)}><FaTrash /></button>
-              </div>
-            ))}
+        {loading ? (
+          <div className="loading-container">
+            <p>Cargando sensores...</p>
           </div>
-        </div>
-
-        {showModal && (
-          <div className="modal-overlay">
-            <div className="modal">
-              <button className="close-btn" onClick={() => setShowModal(false)}><FaTimes /></button>
-              <h3>Nuevo Sensor</h3>
-              <input type="text" name="id" placeholder="ID del sensor" value={newSensor.id} onChange={handleInputChange} />
-              <select name="type" value={newSensor.type} onChange={handleInputChange}>
-                <option value="">Selecciona tipo</option>
-                <option value="temperatura">Temperatura</option>
-                <option value="humedad">Humedad</option>
-                <option value="radiacion">Radiación</option>
-                <option value="presion">Presión</option>
-              </select>
-              <input type="number" name="value" placeholder="Valor" value={newSensor.value} onChange={handleInputChange} />
-              <select name="valueType" value={newSensor.valueType} onChange={handleInputChange}>
-                <option value="">Selecciona unidad</option>
-                {(typeOptions[newSensor.type] || []).map((unit, i) => (
-                  <option key={i} value={unit}>{unit}</option>
-                ))}
-              </select>
-              <button className="save-btn" onClick={handleSaveSensor}>Guardar</button>
+        ) : error ? (
+          <div className="error-container">
+            <p>{error}</p>
+            <button onClick={() => window.location.reload()}>Reintentar</button>
+          </div>
+        ) : (
+          <>
+            <div className="sv-metrics">
+              <div className="sv-card"><FaChartBar /><p>{totalRecords}</p><span>Registros</span></div>
+              <div className="sv-card"><FaList /><p>{totalSensors}</p><span>Sensores</span></div>
+              <div className="sv-card"><FaUsers /><p>{totalUsers}</p><span>Usuarios</span></div>
+              <div className="sv-card"><FaThermometerHalf /><p>{avgTemp}°C</p><span>Temp. Prom.</span></div>
+              <div className="sv-card"><FaTint /><p>{avgHum}%</p><span>Hum. Prom.</span></div>
             </div>
-          </div>
+
+            <div className="sv-last">
+              <h3>Último Registro</h3>
+              <p><strong>ID:</strong> {lastRecord?.id}</p>
+              <p><strong>Tipo:</strong> {lastRecord?.type}</p>
+              <p>
+                <strong>Valor:</strong>{" "}
+                {lastRecord?.[lastRecord.type]?.value} {lastRecord?.[lastRecord.type]?.type}
+              </p>
+            </div>
+
+            <div className="sv-actions">
+              <button className="btn-add" onClick={() => setShowModal(true)}>
+                <FaPlus /> Crear Sensor
+              </button>
+            </div>
+
+            <div className="sv-carousel">
+              <h3>Lista de Sensores</h3>
+              <div className="carousel-container">
+                {sensors.map((sensor, index) => (
+                  <div className="carousel-item" key={index}>
+                    <h4>{sensor.id}</h4>
+                    <p><strong>Tipo:</strong> {sensor.type}</p>
+                    <p><strong>Valor:</strong> {sensor[sensor.type].value} {sensor[sensor.type].type}</p>
+                    <button className="btn-delete" onClick={() => handleDeleteSensor(sensor.id)}><FaTrash /></button>
+                  </div>
+                ))}
+              </div>
+            </div>
+
+            {showModal && (
+              <div className="modal-overlay">
+                <div className="modal">
+                  <button className="close-btn" onClick={() => setShowModal(false)}><FaTimes /></button>
+                  <h3>Nuevo Sensor</h3>
+                  <input type="text" name="id" placeholder="ID del sensor" value={newSensor.id} onChange={handleInputChange} />
+                  <select name="type" value={newSensor.type} onChange={handleInputChange}>
+                    <option value="">Selecciona tipo</option>
+                    <option value="temperatura">Temperatura</option>
+                    <option value="humedad">Humedad</option>
+                    <option value="radiacion">Radiación</option>
+                    <option value="presion">Presión</option>
+                  </select>
+                  <input type="number" name="value" placeholder="Valor" value={newSensor.value} onChange={handleInputChange} />
+                  <select name="valueType" value={newSensor.valueType} onChange={handleInputChange}>
+                    <option value="">Selecciona unidad</option>
+                    {(typeOptions[newSensor.type] || []).map((unit, i) => (
+                      <option key={i} value={unit}>{unit}</option>
+                    ))}
+                  </select>
+                  <button className="save-btn" onClick={handleSaveSensor}>Guardar</button>
+                </div>
+              </div>
+            )}
+          </>
         )}
-
       </div>
-
     </div>
   );
 };
