@@ -5,6 +5,9 @@ import esc_upb from "../../assets/esc_upb.png";
 import { HiArrowNarrowRight  } from "react-icons/hi";
 import { Link } from "react-router-dom";
 const LandingPage = () =>{
+
+    const token = localStorage.getItem('UserToken');
+    
     return(
         <>
             <div className="lp">
@@ -14,7 +17,7 @@ const LandingPage = () =>{
                         <a href="https://www.upb.edu.co/" type="_blank" className="h_l"> ABOUT UPB </a>
                         <a href="https://github.com/juanVolkmar/SensoresIoT" type="_blank" className="h_l"> GITHUB </a>
                     </div>
-                    <Link to="/login" className="h_l btn"> GET STARTED </Link>
+                    <Link to={token ? '/overview' : '/login'} className="h_l btn"> GET STARTED </Link>
 
                 </div>
 
