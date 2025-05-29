@@ -5,6 +5,12 @@ const app = express()
 app.use(express.json())
 
 const port = 3000
+app.use(cors({
+    origin: 'http://localhost:5173',
+    methods: 'GET,HEAD,PUT,PATCH,POST,DELETE,OPTIONS',
+    credentials: true,
+    optionsSuccessStatus: 204,
+}));
 
 app.get('/ping', (_req, res) =>{
     console.log('someone pinged here!!')
