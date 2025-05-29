@@ -1,4 +1,4 @@
-import "./overview.css"
+import "./Overview.css"
 import { HiOutlineBell, HiOutlineLogout } from "react-icons/hi";
 import { HiSearch } from "react-icons/hi";
 import HistSensores from "../graficas/HistSensores";

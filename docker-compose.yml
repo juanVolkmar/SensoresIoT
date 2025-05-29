@@ -1,0 +1,15 @@
+#Despliegue de front y back
+services:
+  frontend:
+    container_name: frontend
+    build: ./front-end
+    ports:
+      - "5173:5173"
+    depends_on:
+      - backend
+
+  backend:
+    container_name: backend
+    build: ./back-end
+    ports:
+      - "3000:3000"
